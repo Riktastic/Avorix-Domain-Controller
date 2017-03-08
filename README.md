@@ -1,4 +1,4 @@
-# Avorix-Domain-Controller
+## Avorix-Domain-Controller
 A Raspberry Pi based domain controller developed for business and education.
 
 
@@ -10,14 +10,14 @@ A Raspberry Pi based domain controller developed for business and education.
 1. Execute: sudo chmod +x Install-DC.sh
 1. Execute: sudo bash Install-DC.sh
 1. Join the domain using the Active Directory administrator account.
-   1.1. Boot up a Windows Vista/Win7/8/8.1/10 or Windows Server 2008/2008 R2/2012/2012 R2 client computer.
-   1.1. Search on the client computer for: SystemPropertiesComputerName.exe
-   1.1. Click on "Change...".
-   1.1. Select "Domain" under "Member of".
-   1.1. Enter your domain name.
-   1.1. Click on "OK".
-   1.1. Log on using the Active Directory administrator account.
-   1.1. Reboot.
+   1. Boot up a Windows Vista/Win7/8/8.1/10 or Windows Server 2008/2008 R2/2012/2012 R2 client computer.
+   1. Search on the client computer for: SystemPropertiesComputerName.exe
+   1. Click on "Change...".
+   1. Select "Domain" under "Member of".
+   1. Enter your domain name.
+   1. Click on "OK".
+   1. Log on using the Active Directory administrator account.
+   1. Reboot.
 1. Log on the client computer in as the Active Directory Administrator account.
 1. Give the "users"-share the following share permissions:
     Principal 	            Access
