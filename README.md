@@ -1,8 +1,36 @@
 # Avorix-Domain-Controller
 A Raspberry Pi based domain controller developed for business and education.
 
+The project is currently mainly focused on installing a Raspberry Pi Domain Controller.
+While keeping the configuration files on an external USB-storage device. 
+
+
+In the future the project will span to differenct Linux operating systems but we will first expand it's current functions including:
+- Integrate a GUI for configuration.
+- Integrate checks.
+- Find a way to make AUDITD to work.
+- Use PXE to deploy Windows.
+- Set the permissions on the "users"-share automaticly.
+- Adding the option to join a Active Directory domain.
+
 
 ## Installation
+### Knowledge requirements
+1. Basic knowledge of the Linux command shell. Most of the process is automated but it is required to be able to solve problems.
+1. Basic networking knowledge, you will need to know what: 
+   1. The difference between a switch and a router is
+   1. The difference between a static and a DHCP IP-address is
+   1. What a domainname actually is, a domainname is a nickname for an IP-address.
+   1. How a computer is able communicate with the Internet.
+1. Basic knowledge of creating shares in Windows.
+1. Basic knowledge of maintaining an Active Directory Domain, YouTube has lots of free tutorials about this subject.
+
+### Hardware requirements
+1. A Raspberry Pi with Raspbian Lite, other computers with a Debian Jessie based operating system might work but these installations are not supported by the developers of this project.
+1. A client computer with Windows Vista/Win7/8/8.1/10 or Windows Server 2008/2008 R2/2012/2012 R2.
+1. A decent network with Internet access.
+
+
 ### 1. Configuring the Raspberry Pi
 1. Install a clean version of Raspbian Lite on a Raspberry Pi.
 1. Plug in an EXT4 USB-flashdrive.
