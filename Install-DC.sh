@@ -978,10 +978,10 @@ echo "###SELinux ###"
 echo "##############"
 echo "";
 echo "### Packages ###"
-ehco "SELinux-Basics"
+echo "SELinux-Basics"
 dpkg -p seliux-basics
 echo "";
-ehco "SELinux-Policy-Default"
+echo "SELinux-Policy-Default"
 dpkg -p seliux-basics
 fi)
 
