@@ -6,7 +6,7 @@ A Raspberry Pi based domain controller developed for business and education.
 ### 1. Configuring the Raspberry Pi
 1. Install a clean version of Raspbian Lite on a Raspberry Pi.
 1. Plug in an EXT4 USB-flashdrive.
-1. Execute the following command: curl https://raw.githubusercontent.com/RHeijmann/Avorix-Domain-Controller/master/scripts/Install-DC.sh
+1. Execute the following command: curl https://raw.githubusercontent.com/RHeijmann/Avorix-Domain-Controller/master/Install-DC.sh
 1. Configure the first section of the script using: nano Install-DC.sh, save it using [Ctrl] + [x] followed by pressing on [Y].
 1. Execute: sudo chmod +x Install-DC.sh
 1. Execute: sudo bash Install-DC.sh
