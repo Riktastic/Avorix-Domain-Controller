@@ -21,8 +21,8 @@
 ###########################################################
 #                       Versions                          #
 ###########################################################
-DC_SCRIPT_VERSION="1.0-RC6"
-DC_RELEASE_DATE="8-6-2017"
+DC_SCRIPT_VERSION="1.0-RC9"
+DC_RELEASE_DATE="25-12-2017"
 # Major update: Can break your current installation.
 # Minor update: Will not break your current installation.
 #
@@ -43,12 +43,13 @@ DC_RELEASE_DATE="8-6-2017"
 # 0.9: Significant update: Extended to support UEFI PXE
 #
 # 1.0-RC2: Major update: Is more extensible.
+# 1.0-RC3/8: Added support for 2FA using TOTP, Portknocking and Fail2Ban.
 
 
 ###########################################################
 #                         To Do                           #
 ###########################################################
-# - Make this script work with CentOS, ArchLinux and Ubuntu.
+# - Make this script work with CentOS and Ubuntu.
 # - Integrate a GUI for configuration.
 # - Integrate checks: Partly Done, need more checks.
 # - Find a way to make AUDITD to work.
@@ -60,6 +61,8 @@ DC_RELEASE_DATE="8-6-2017"
 # 1. The configuration fase.
 # 1.1. Settings.
 # 1.2. System Specific Variables.
+# 1.2.1. Sysem Specific Variables for Raspbian Jessie.
+# 1.2.2. System Specific Variables for CentOS 7.
 # 1.3. Check the configuration.
 # 1.4. Show a summary of the settings.
 
@@ -190,7 +193,7 @@ SSH_SERVER=0 #Enable this to add a user and allow it to be used to mange the ser
 	SSH_USER=Avorix #Future users have to be added to the "ssh"-group to use "ssh".
 	SSH_USER_PASSWORD='P4ssw0rd'
 	SSH_USER_SUDO=1 #Set to 1 to give this user permission to run administrator commands using "sudo".
-	SSH_PORTKNOCKING=0 #Enable this to only provide the SSH service when a sequence of numbers is knocked.						#IMPLEMENTED NOT TESTED.
+	SSH_PORTKNOCKING=0 #Enable this to only provide the SSH service when a sequence of numbers is knocked.
 		SSH_PORTKNOCKING_OPEN_SEQ1=7999 #Sequence number 1 for opening the openssh Portknock.
 		SSH_PORTKNOCKING_OPEN_SEQ2=8181
 		SSH_PORTKNOCKING_OPEN_SEQ3=1821
@@ -198,19 +201,22 @@ SSH_SERVER=0 #Enable this to add a user and allow it to be used to mange the ser
 		SSH_PORTKNOCKING_CLOSE_SEQ2=8121
 		SSH_PORTKNOCKING_CLOSE_SEQ3=5821
 		
-	SSH_FAIL2BAN=0 #Enable this to block an IP-address when a configurable amount of failed attempts has been reached.			#IMPLEMENTED NOT TESTED.
+	SSH_FAIL2BAN=0 #Enable this to block an IP-address when a configurable amount of failed attempts has been reached.
 		SSH_FAIL2BAN_MAXRETRY=3 #How many attempts can be made to access the server from a single IP before a ban is imposed.
 		SSH_FAIL2BAN_FINDTIME=900 #The length of time between login attempts before a ban is set. For example, if Fail2Ban is set to ban an IP after three failed log-in attempts, those three attempts must occur within the set findtime limit. The findtime value should be a set number of seconds.
 		SSH_FAIL2BAN_BANTIME=900 #The length of time in seconds that the IP Address will be banned for. In my example I used ‘900’ seconds which would be 15 minutes. If you want to ban an IP Address permanently then you will set the bantime to ‘-1’.
 		
-	SSH_2FA=0 #Enable this to login usign Two-Factor-Authentication using Google-Authenticator. After installation run 'google-authenticator' as the user which will be using 2FA. During prompts choose 'y'. Afterwards restart SSH.													#IMPLEMENTED NOT TESTED!																											#Work in progress!
+	SSH_2FA=0 #Enable this to login usign Two-Factor-Authentication using Google-Authenticator. After installation run 'google-authenticator' as the user which will be using 2FA. During prompts choose 'y'. Afterwards restart SSH.
 
-
+	
 ###########################################################
 # 1.2.         System  Specific Variables                 #
 ###########################################################
-# These variables ensure compatibility over multiple systems.
+# These different sets of variables ensure compatibility over multiple Linux-distributions.
 # Please do not change these!
+# If you would like to add compatibility for a different Linux-distribution (or even a different Unix-distribution) 
+# then copy the template and fill it in with the correct parameters of the target dsitrbution.
+
 
 if [ "$OS" == "RASPBIAN" ] ; then
 # For Raspbian Jessie
@@ -222,7 +228,7 @@ PM_INSTALL='apt-get install'
 PM_INSTALL_ENDING_VARIABLES='-y'
 
 # Packages:
-PACKAGE_SAMBA='samba samba-vfs-modules'
+PACKAGE_SAMBA='samba'
 PACKAGE_NTP='ntp'
 PACKAGE_FIREWALLD='firewalld'
 PACKAGE_SELINUX='selinux-basics selinux-policy-default'
@@ -234,7 +240,7 @@ PACKAGE_APACHE='apache2'
 PACKAGE_USBMOUNT='usbmount'
 PACKAGE_KNOCKD='knockd'
 PACKAGE_FAIL2BAN='fail2ban'
-PACKAGE_LIBPAM_GOOGLE_AUTHENTICATOR='libpam-google-authenticator' #Not Tested!
+PACKAGE_LIBPAM_GOOGLE_AUTHENTICATOR='libpam-google-authenticator' 
 
 # Paths to folders:
 PATH_FOLDER_CRON_DAILY='/etc/cron.daily'
@@ -288,32 +294,33 @@ DAEMON_DHCPD='isc-dhcp-server'
 fi
 
 if [ "$OS" == "CENTOS7" ] ; then
+# Has not been finished!
 # For CentOS 7
 # Tools
-PM_UPDATE=''
-PM_UPGRADE=''
-PM_SYSUPGRADE='yum update -y'							#Correct
+PM_UPDATE='yum check-update'							#This is actually not neccesary as most yum commands will run this automaticly.
+PM_UPGRADE='yum update -y'
+PM_SYSUPGRADE='yum upgrade -y'							#Correct
 PM_INSTALL='yum install'								#Correct
 PM_INSTALL_ENDING_VARIABLES='-y'						#Correct
 
 # Packages:
-PACKAGE_SAMBA=''
-PACKAGE_NTP=''
-PACKAGE_FIREWALLD=''
-PACKAGE_SELINUX=''
-PACKAGE_DHCPD=''
-PACKAGE_CLAMAV=''
-PACKAGE_OPENSSHD=''
-PACKAGE_TFTPD=''
-PACKAGE_APACHE=''
-PACKAGE_USBMOUNT=''
-PACKAGE_KNOCKD=''
-PACKAGE_FAIL2BAN=''
-PACKAGE_LIBPAM_GOOGLE_AUTHENTICATOR=''
+PACKAGE_SAMBA='samba samba-dc'
+PACKAGE_NTP='ntp'
+PACKAGE_FIREWALLD='firewalld'
+PACKAGE_SELINUX='' #Not required, it is allready within Centos 7
+PACKAGE_DHCPD='dhcp'
+PACKAGE_CLAMAV='epel-release && yum install clamav-server clamav-data clamav-update clamav-filesystem clamav clamav-scanner-systemd clamav-devel clamav-lib clamav-server-systemd -y'
+PACKAGE_OPENSSHD='openssh'
+PACKAGE_TFTPD='tftp-server' #!Might be different from the debian variety.
+PACKAGE_APACHE='httpd'
+PACKAGE_USBMOUNT='' #!Not for CentOS!
+PACKAGE_KNOCKD='knock' #!Requires EPEL, not verified.
+PACKAGE_FAIL2BAN='fail2ban' #Requires EPEL
+PACKAGE_LIBPAM_GOOGLE_AUTHENTICATOR='google-authenticator'
 
 # Paths to folders:
-PATH_FOLDER_CRON_DAILY=''
-PATH_FOLDER_CRON_HOURLY=''
+PATH_FOLDER_CRON_DAILY='/etc/cron.daily'
+PATH_FOLDER_CRON_HOURLY='/etc/cron.hourly'
 PATH_FOLDER_APACHE_SITES_ENABLED=''
 PATH_FOLDER_SSH_KEYS=''
 
@@ -358,14 +365,15 @@ fi
 # 1.3.               Check the configuration              #
 ###########################################################
 
+#Since the PXE-module requires the DHCP-modules, check if both the DHCP- & PXE-modules have been enabled and if not warn the user that if the user wants to use PXE they have to enable the DHCP-module.
 if [ "$DHCP_SERVER" -eq "1" ] && [ "$PXE_SERVER" -eq "1" ] ; then
 	PXE_SERVER=2
 else
 	PXE_SERVER=0
 	setterm -term linux -back red -fore white
 	echo "###########################################################"
-	echo "# Warning: To use PXE Server enable the DHCP Server       #"
-	echo "#           in the settings section of this script!       #"
+	echo "# Warning: To use PXE enable the DHCP Server              #"
+	echo "#          in the settings section of this script!        #"
 	echo "###########################################################"
 	pause_with_msg
 	setterm -default
@@ -377,6 +385,7 @@ fi
 # 1.4.        Show a summary of the settings              #
 ###########################################################
 
+#Create a few functions to enable the script to pause the installation and wait for the user to confirm the further going of the installation.
 pause(){
 	read fackEnterKey
 }
@@ -531,12 +540,10 @@ fi
 # 2.2.          Update the complete system                #
 ###########################################################
 
-if [ "$OS" == "RASPBIAN" ] ; then
 sudo $PM_UPDATE
 sudo $PM_UPGRADE
-fi
-
 sudo $PM_SYSUPGRADE
+sudo $PM_UPGRADE				# Just to make sure that every system installs the newest packages without limitations of the OS-version.
 
 
 ###########################################################
@@ -902,6 +909,9 @@ if [ "$SSH_SERVER" -eq "1" ] ; then
 	if [ "$SSH_FAIL2BAN" -eq "1" ] ; then
 		sudo $PM_INSTALL $PACKAGE_FAIL2BAN $PM_INSTALL_ENDING_VARIABLES
 	fi
+	if [ "$SSH_2FA" -eq "1" ] ; then
+		sudo $PM_INSTALL $PACKAGE_LIBPAM_GOOGLE_AUTHENTICATOR $PM_INSTALL_ENDING_VARIABLES
+	fi
 fi
 
 if [ "$PXE_SERVER" -eq "2" ]; then
@@ -937,27 +947,6 @@ sudo $PM_INSTALL $PACKAGE_SAMBA $PACKAGE_NTP $PM_INSTALL_ENDING_VARIABLES
 #	echo "###########################################################"
 #	echo "Reason:"
 #	echo " - SAMBA could not be installed."
-#	echo ""
-#	echo "Solution:"
-#	echo " - Make sure that:"
-#	echo "	- You have a stable internet connection!"
-#	echo "	- Install it manually."
-#	echo "	- Skip this part."
-#	echo "###########################################################"
-#	pause_with_msg
-#	setterm -default
-#	exit
-#fi
-
-#if [ "$(dpkg -s samba-vfs-modules 2>/dev/null >/dev/null)" -eq "0" ] ; then
-#	echo "The SAMBA-VFS-Modules are succesfully installed!"
-#	else
-#	setterm -term linux -back red -fore white
-#	echo "###########################################################"
-#	echo "# Error: Installation stopped!                            #"
-#	echo "###########################################################"
-#	echo "Reason:"
-#	echo " - The SAMBA-VFS-Modules could not be installed."
 #	echo ""
 #	echo "Solution:"
 #	echo " - Make sure that:"
@@ -1505,6 +1494,12 @@ EOT
 	sudo cat <<EOT >> $LOCATION_OF_IMPORTANT_FILES/SSH/Configuration/sshd_config
 ChallengeResponseAuthentication no
 EOT
+
+	su $SSH_USER 
+	google-authenticator -t --qr-mode=utf8
+	google-authenticator --emergency-codes=5 > $LOCATION_OF_IMPORTANT_FILES/Google_Authenticator_Emergency_Codes.txt
+	pause_with_msg
+	exit
 	fi
 sudo cat <<EOT >> $LOCATION_OF_IMPORTANT_FILES/SSH/Configuration/sshd_config
 
@@ -2211,8 +2206,6 @@ SAMBA:
 SAMBA-Winbind:
 	$(dpkg -p samba-winbind)
 	
-SAMBA-VFS-Modules:
-	$(dpkg -p samba-vfs-modules)
 
 
 #############
@@ -2412,7 +2405,7 @@ EOT
 ###########################################################
 # 5.2.             Generate the locationscript            #
 ###########################################################
-1. Disable all services if this function is enabled.
+# 1. Disable all services if this function is enabled.
 
 if [ "$MOBILE" -eq "1" ] ; then
 sudo systemctl disable $DAEMON_DHCPCD
@@ -2428,7 +2421,7 @@ sudo systemctl disable $DAEMON_TFTPD
 # sudo systemctl disable $DAEMON_FIREWALD
 
 #Script starts here.
-2. Check if the last LOIF still works.
+# 2. Check if the last LOIF still works.
 
 sudo read -r LAST_LOIF < /etc/avorix/avdc_loip
 
@@ -2496,8 +2489,8 @@ else
 fi
 
 	
-	6. Link the files.
-	- If an error occurs warn the user.
+# 6. Link the files.
+# - If an error occurs warn the user.
 
 sudo ln -sf $LOCATION_OF_IMPORTANT_FILES/General/Configuration/dhcpcd.conf $PATH_FILE_DHCPCD_CONF
 sudo ln -sf $LOCATION_OF_IMPORTANT_FILES/General/Configuration/hosts $PATH_FILE_HOSTS_CONF
@@ -2538,7 +2531,7 @@ if [ "$BRANDING" -eq "1" ] ; then
 	sudo ln -sf $LOCATION_OF_IMPORTANT_FILES/General/Configuration/issue.net $PATH_FILE_ISSUENET
 fi
 EOT
-7. Start the services.
+# 7. Start the services.
 sudo systemctl start $DAEMON_NTP
 sudo systemctl start $DAEMON_SMBD
 sudo systemctl start $DAEMON_NMBD
