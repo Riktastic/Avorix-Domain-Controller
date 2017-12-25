@@ -19,4 +19,4 @@ What it currently does not provide:
 - The ability to 2-way replicate the "sysvol"-share between Windows based en Linux based domain controllers.
 
 
-#[Install here!](https://github.com/RHeijmann/Avorix-Domain-Controller/wiki/Installation)
+# [Install here!](https://github.com/RHeijmann/Avorix-Domain-Controller/wiki/Installation)
