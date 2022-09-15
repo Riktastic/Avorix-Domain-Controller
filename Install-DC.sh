@@ -35,7 +35,7 @@ fi
 # and policies using the RSAT-tools.
 #
 # This script was built upon best practices and experiences.
-# ~ Rik Heijmann
+# ~ https://Github.com/Riktastic
 
 ###########################################################
 #                     Development notes!                  #
